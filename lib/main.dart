@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app/Weather/WeatherModal.dart';
-import 'package:weather_app/WeatherScreen.dart';
+import 'package:weather_app/Weather/weather_provider.dart';
 
 void main() {
   runApp(
@@ -10,6 +11,8 @@ void main() {
     ),
   );
 }
+
+// Open Weather Key = 27d6af55617f1f4431e5852064de2768
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,33 +30,34 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final weather = ref.watch(weatherProvider);
+    final weather = ref.watch(weatherProvider);
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Weather App'),
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () async {
+            final weatherofcity =
+                await weather.getWeatherbyCityName('bhavnagar');
 
-        return weather.when(
-          data: (data) {
-            return WeatherScreen(modal: data);
+            print(weatherofcity.place_name);
+            print(weatherofcity.sunrise);
+            print(weatherofcity.temp);
           },
-          error: (error, stackTrace) {
-            return Text('Some Error Occurred $error');
-          },
-          loading: () {
-            return const Scaffold(
-                body: Center(child: CircularProgressIndicator()));
-          },
-        );
-      },
+          child: Text("Press Here"),
+        ),
+      ),
     );
   }
 }
