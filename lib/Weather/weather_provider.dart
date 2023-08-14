@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_app/models/weather_model.dart';
 
-final weatherProvider = Provider((ref) => WeatherModelFactory());
+final weatherProvider = Provider(
+  (ref) => WeatherModelFactory(),
+);
 
 class WeatherModelFactory {
   WeatherFactory wf = WeatherFactory(

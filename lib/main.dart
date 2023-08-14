@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather_app/Weather/weather_provider.dart';
+import 'package:weather_app/weather_display.dart';
 
 void main() {
   runApp(
@@ -38,6 +39,10 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String placeName = '';
+  String temp = '';
+  String sunriseTime = '';
+  String date = '';
   @override
   Widget build(BuildContext context) {
     final weather = ref.watch(weatherProvider);
@@ -46,18 +51,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         title: const Text('Weather App'),
       ),
       body: Center(
-        child: TextButton(
-          onPressed: () async {
-            final weatherofcity =
-                await weather.getWeatherbyCityName('bhavnagar');
-
-            print(weatherofcity.place_name);
-            print(weatherofcity.sunrise);
-            print(weatherofcity.temp);
-          },
-          child: Text("Press Here"),
-        ),
-      ),
+          child: Column(
+        children: [
+          TextButton(
+            onPressed: () async {
+              final weatherofcity = await weather.getWeatherbyCityName(
+                "Bhavnagar",
+              );
+              setState(() {
+                placeName = weatherofcity.place_name;
+                temp = weatherofcity.temp;
+                date = weatherofcity.date;
+                sunriseTime = weatherofcity.sunrise;
+              });
+            },
+            child: const Text('Click here to get weather'),
+          ),
+          WeatherDisplay(
+            placeName: placeName,
+            date: date,
+            temp: temp,
+            sunrise: sunriseTime,
+            onPressed: () {},
+          ),
+        ],
+      )),
     );
   }
 }
