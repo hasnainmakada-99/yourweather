@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -43,39 +44,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String temp = '';
   String sunriseTime = '';
   String date = '';
+  String weatherIcon = '';
+
+  void search(String cityname) async {
+    final weather = ref.watch(weatherProvider);
+    final weatherStats = await weather.getWeatherbyCityName(cityname);
+    placeName = weatherStats.place_name;
+    temp = weatherStats.temp;
+    date = weatherStats.date;
+    sunriseTime = weatherStats.sunrise;
+    weatherIcon = weatherStats.weatherIcon;
+    setState(
+      () {},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final weather = ref.watch(weatherProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Weather App'),
+        title: TextField(
+          onChanged: (value) => search(value),
+          style: const TextStyle(color: Colors.white),
+          cursorColor: Colors.white, // Set the cursor color
+          decoration: InputDecoration(
+            hintText: 'Enter Your City Name and press enter...',
+            hintStyle: const TextStyle(
+              color: Colors.white, // Set the hint text color
+            ),
+            fillColor: const Color.fromARGB(
+                255, 148, 137, 137), // Set the background color
+            filled: true, // Ensure the background is filled
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.grey[400], // Set the icon color
+            ),
+            border: OutlineInputBorder(
+              // Add a border
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
       ),
       body: Center(
-          child: Column(
-        children: [
-          TextButton(
-            onPressed: () async {
-              final weatherofcity = await weather.getWeatherbyCityName(
-                "Bhavnagar",
-              );
-              setState(() {
-                placeName = weatherofcity.place_name;
-                temp = weatherofcity.temp;
-                date = weatherofcity.date;
-                sunriseTime = weatherofcity.sunrise;
-              });
-            },
-            child: const Text('Click here to get weather'),
-          ),
-          WeatherDisplay(
-            placeName: placeName,
-            date: date,
-            temp: temp,
-            sunrise: sunriseTime,
-            onPressed: () {},
-          ),
-        ],
-      )),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: WeatherDisplay(
+                placeName: placeName,
+                date: date,
+                temp: temp,
+                sunrise: sunriseTime,
+                weatherIcon: weatherIcon,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

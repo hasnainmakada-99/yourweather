@@ -2,10 +2,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather/weather.dart';
 import 'package:weather_app/models/weather_model.dart';
 
-final weatherProvider = Provider(
-  (ref) => WeatherModelFactory(),
-);
-
 class WeatherModelFactory {
   WeatherFactory wf = WeatherFactory(
     '27d6af55617f1f4431e5852064de2768',
@@ -22,6 +18,7 @@ class WeatherModelFactory {
         date: w.date.toString(),
         temp: w.temperature.toString(),
         sunrise: w.sunrise.toString(),
+        weatherIcon: w.weatherIcon.toString(),
       );
 
       return weatherModel;
@@ -31,7 +28,10 @@ class WeatherModelFactory {
         date: '',
         temp: '',
         sunrise: '',
+        weatherIcon: '',
       );
     }
   }
 }
+
+final weatherProvider = Provider((ref) => WeatherModelFactory());
